@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .song-container {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        .song-description {
+            flex: 1;
+            padding-right: 20px;
+        }
+        .song-play {
+            width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="song-list"></div>
+
+    <script>
+        const songs = [
+            { title: "Song 1", description: "직장 생활이 힘들어요 이직하고 싶어요우울하거나 슬픈 기분이 지속돼요 거의 매일 슬프거나 우울한 기분이 들어요", file: "song1.mp3" },
+            { title: "Song 2", description: "직장 생활이 힘들어요 이직하고 싶어요무언가에 집착하거나 반복적인 행동을 해요 정리정돈에 집착해요", file: "hopeful_horizon.mp3" },
+            { title: "Song 3", description: "직장 생활이 힘들어요 직장 내 인간관계가 힘들어요 식욕이 변했어요  체중이 많이 줄었어요", file: "resilient_heart.mp3" },
+            { title: "Song 4", description: "직장 생활이 힘들어요 업무 스트레스가 너무 커요 우울하거나 슬픈 기분이 지속돼요 거의 매일 슬프거나 우울한 기분이 들어요", file: "강해질_거야.mp3" },
+            { title: "Song 5", description: "진로를 찾고 싶어요 어떤 직업을 가져야 할지 모르겠어요 과거의 충격적인 경험이 자주 떠올라요 과거의 사건을 떠올리는 것을 피하려고 해요", file: "내_안의_길.mp3" },
+            { title: "Song 6", description: "연애 문제가 있어요 상대가 날 떠날까봐 불안해요 우울하거나 슬픈 기분이 지속돼요 거의 매일 슬프거나 우울한 기분이 들어요", file: "staying_strong.mp3" },
+            { title: "Song 7", description: "경제적인 문제로 고민이 되요 기타 절제하거나 끊어내기 힘들어요 스마트폰을 지나치게 사용해요", file: "Unchained.mp3" },
+            { title: "Song 8", description: "출산 후 이유 없이 눈물이 나요 우울감을 자주 느껴요 우울하거나 슬픈 기분이 지속돼요 흥미나 즐거움을 느끼지 못해요", file: "Strong_again.mp3" },
+            { title: "Song 9", description: "직장에서 인정받지 못해요 직장 내 인간관계가 힘들어요 무언가에 집착하거나 반복적인 행동을 해요 정리정돈에 집착해요", file: "Stronger_in_My_Steps.mp3" },
+            { title: "Song 10", description: "집에서도 내 자리가 없어요 사람들과 어울리기 힘들어요", file: "feel_alive.mp3" },
+        ];
+
+        const songList = document.getElementById('song-list');
+        let currentAudio = null;
+
+        songs.forEach((song, index) => {
+            const songContainer = document.createElement('div');
+            songContainer.className = 'song-container';
+
+            const descriptionDiv = document.createElement('div');
+            descriptionDiv.className = 'song-description';
+            descriptionDiv.innerHTML = `<h3>${song.title}</h3><p>${song.description}</p>`;
+
+            const playDiv = document.createElement('div');
+            playDiv.className = 'song-play';
+            const playButton = document.createElement('button');
+            playButton.textContent = 'Play';
+            playButton.onclick = () => playSong(song.file);
+
+            playDiv.appendChild(playButton);
+            songContainer.appendChild(descriptionDiv);
+            songContainer.appendChild(playDiv);
+            songList.appendChild(songContainer);
+        });
+
+        function playSong(file) {
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+            currentAudio = new Audio(file);
+            currentAudio.play();
+        }
+    </script>
+</body>
+</html>
