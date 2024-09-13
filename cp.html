@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song List with Inline Lyrics</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .song-container {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        .song-description {
+            padding-right: 20px;
+        }
+        .song-play {
+            margin-top: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .lyrics {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="song-list"></div>
+
+    <script>
+        const songs = [
+            { title: "Song 1", description: "직장 생활이 힘들어요 이직하고 싶어요우울하거나 슬픈 기분이 지속돼요 거의 매일 슬프거나 우울한 기분이 들어요", file: "song1.mp3", lyrics: "Lyrics for Song 1..." },
+            { title: "Song 2", description: "직장 생활이 힘들어요 이직하고 싶어요무언가에 집착하거나 반복적인 행동을 해요 정리정돈에 집착해요", file: "hopeful_horizon.mp3", lyrics: "Lyrics for Song 2..." },
+            { title: "Song 3", description: "직장 생활이 힘들어요 직장 내 인간관계가 힘들어요 식욕이 변했어요  체중이 많이 줄었어요", file: "resilient_heart.mp3", lyrics: "Lyrics for Song 3..." },
+            { title: "Song 4", description: "직장 생활이 힘들어요 업무 스트레스가 너무 커요 우울하거나 슬픈 기분이 지속돼요 거의 매일 슬프거나 우울한 기분이 들어요", file: "강해질_거야.mp3", lyrics: "Lyrics for Song 4..." },
+            { title: "Song 5", description: "진로를 찾고 싶어요 어떤 직업을 가져야 할지 모르겠어요 과거의 충격적인 경험이 자주 떠올라요 과거의 사건을 떠올리는 것을 피하려고 해요", file: "내_안의_길.mp3", lyrics: "[Verse]
+헤매는 마음 속에 길을 찾아봐
+어디로 가야 할지 알 수 없지만
+과거의 상처가 자꾸 떠오르네
+다시 생각하지 않으려 해
+
+[Verse 2]
+어둠 속에서도 빛을 찾아봐
+희망의 별을 향해 걸어가
+마음의 상처를 꿰매고 싶어
+새로운 날을 맞이하고 싶어
+
+[Chorus]
+내 안의 길 찾고 싶어
+어디든 갈 수 있을 거야
+과거의 아픔을 넘어서
+나의 꿈을 이루고 싶어
+
+[Verse 3]
+바람이 나의 얼굴을 스쳐가네
+새로운 시작을 약속하듯
+가슴 속 깊이 숨겨둔 희망
+다시 꺼내어 빛을 찾아봐
+
+[Bridge]
+내 마음의 소리를 들어봐
+나의 길을 찾아줄 거야
+어둠 속에서도 빛을 찾아
+새로운 날을 기다려
+
+[Chorus]
+내 안의 길 찾고 싶어
+어디든 갈 수 있을 거야
+과거의 아픔을 넘어서
+나의 꿈을 이루고 싶어" },
+            { title: "Song 6", description: "연애 문제가 있어요 상대가 날 떠날까봐 불안해요 우울하거나 슬픈 기분이 지속돼요 거의 매일 슬프거나 우울한 기분이 들어요", file: "staying_strong.mp3", lyrics: "Lyrics for Song 6..." },
+            { title: "Song 7", description: "경제적인 문제로 고민이 되요 기타 절제하거나 끊어내기 힘들어요 스마트폰을 지나치게 사용해요", file: "unchained.mp3", lyrics: "Lyrics for Song 7..." },
+            { title: "Song 8", description: "출산 후 이유 없이 눈물이 나요 우울감을 자주 느껴요 우울하거나 슬픈 기분이 지속돼요 흥미나 즐거움을 느끼지 못해요", file: "strong_again.mp3", lyrics: "Lyrics for Song 8..." },
+            { title: "Song 9", description: "직장에서 인정받지 못해요 직장 내 인간관계가 힘들어요 무언가에 집착하거나 반복적인 행동을 해요 정리정돈에 집착해요", file: "stronger_in_my_steps.mp3", lyrics: "Lyrics for Song 9..." },
+            { title: "Song 10", description: "집에서도 내 자리가 없어요 사람들과 어울리기 힘들어요", file: "feel_alive.mp3", lyrics: "     " },
+        ];
+
+        const songList = document.getElementById('song-list');
+        let currentAudio = null;
+        let currentLyrics = null;
+
+        songs.forEach((song, index) => {
+            const songContainer = document.createElement('div');
+            songContainer.className = 'song-container';
+
+            const descriptionDiv = document.createElement('div');
+            descriptionDiv.className = 'song-description';
+            descriptionDiv.innerHTML = `<h3>${song.title}</h3><p>${song.description}</p>`;
+
+            const playDiv = document.createElement('div');
+            playDiv.className = 'song-play';
+            const playButton = document.createElement('button');
+            playButton.textContent = 'Play';
+            playButton.onclick = () => playSong(song, index);
+
+            const lyricsDiv = document.createElement('div');
+            lyricsDiv.className = 'lyrics';
+            lyricsDiv.innerHTML = `<h4>${song.title} Lyrics</h4><p>${song.lyrics}</p>`;
+
+            playDiv.appendChild(playButton);
+            songContainer.appendChild(descriptionDiv);
+            songContainer.appendChild(playDiv);
+            songContainer.appendChild(lyricsDiv);
+            songList.appendChild(songContainer);
+        });
+
+        function playSong(song, index) {
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+            if (currentLyrics) {
+                currentLyrics.style.display = 'none';
+            }
+            
+            currentAudio = new Audio(song.file);
+            currentAudio.play();
+            
+            currentLyrics = document.getElementsByClassName('lyrics')[index];
+            currentLyrics.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

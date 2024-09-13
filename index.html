@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Song List with Inline Lyrics</title>
+    <title>Song List with Lyrics</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -30,6 +30,7 @@
             padding: 10px;
             background-color: #f0f0f0;
             border-radius: 5px;
+            white-space: pre-wrap;
         }
     </style>
 </head>
@@ -37,17 +38,418 @@
     <div id="song-list"></div>
 
     <script>
+        function escapeLyrics(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         const songs = [
-            { title: "Song 1", description: "직장 생활이 힘들어요 이직하고 싶어요우울하거나 슬픈 기분이 지속돼요 거의 매일 슬프거나 우울한 기분이 들어요", file: "song1.mp3", lyrics: "Lyrics for Song 1..." },
-            { title: "Song 2", description: "직장 생활이 힘들어요 이직하고 싶어요무언가에 집착하거나 반복적인 행동을 해요 정리정돈에 집착해요", file: "hopeful_horizon.mp3", lyrics: "Lyrics for Song 2..." },
-            { title: "Song 3", description: "직장 생활이 힘들어요 직장 내 인간관계가 힘들어요 식욕이 변했어요  체중이 많이 줄었어요", file: "resilient_heart.mp3", lyrics: "Lyrics for Song 3..." },
-            { title: "Song 4", description: "직장 생활이 힘들어요 업무 스트레스가 너무 커요 우울하거나 슬픈 기분이 지속돼요 거의 매일 슬프거나 우울한 기분이 들어요", file: "강해질_거야.mp3", lyrics: "Lyrics for Song 4..." },
-            { title: "Song 5", description: "진로를 찾고 싶어요 어떤 직업을 가져야 할지 모르겠어요 과거의 충격적인 경험이 자주 떠올라요 과거의 사건을 떠올리는 것을 피하려고 해요", file: "내_안의_길.mp3", lyrics: "Lyrics for Song 5..." },
-            { title: "Song 6", description: "연애 문제가 있어요 상대가 날 떠날까봐 불안해요 우울하거나 슬픈 기분이 지속돼요 거의 매일 슬프거나 우울한 기분이 들어요", file: "staying_strong.mp3", lyrics: "Lyrics for Song 6..." },
-            { title: "Song 7", description: "경제적인 문제로 고민이 되요 기타 절제하거나 끊어내기 힘들어요 스마트폰을 지나치게 사용해요", file: "unchained.mp3", lyrics: "Lyrics for Song 7..." },
-            { title: "Song 8", description: "출산 후 이유 없이 눈물이 나요 우울감을 자주 느껴요 우울하거나 슬픈 기분이 지속돼요 흥미나 즐거움을 느끼지 못해요", file: "strong_again.mp3", lyrics: "Lyrics for Song 8..." },
-            { title: "Song 9", description: "직장에서 인정받지 못해요 직장 내 인간관계가 힘들어요 무언가에 집착하거나 반복적인 행동을 해요 정리정돈에 집착해요", file: "stronger_in_my_steps.mp3", lyrics: "Lyrics for Song 9..." },
-            { title: "Song 10", description: "집에서도 내 자리가 없어요 사람들과 어울리기 힘들어요", file: "feel_alive.mp3", lyrics: "Lyrics for Song 10..." },
+            { 
+                title: "Song 1", 
+                description: "직장 생활이 힘들어요 이직하고 싶어요우울하거나 슬픈 기분이 지속돼요 거의 매일 슬프거나 우울한 기분이 들어요", 
+                file: "song1.mp3", 
+                lyrics: `[Verse]
+일의 무게 내 어깨에 내려앉아
+하루하루가 벽처럼 느껴져
+꿈을 찾고 싶어 나를 살리고
+빛을 찾아서 길을 걷고파
+
+[Verse 2]
+마음속 구름이 회색으로 물들어
+희망의 빛을 다시 느끼고 싶어
+매일매일이 힘겹기만 해도
+나는 나의 길을 찾아 떠나
+
+[Chorus]
+느낄 거야 언젠가 좋은 날들
+비가 그치고 해가 비출 거야
+눈물 뒤에 웃음이 기다릴 거야
+마음의 문을 열어 봐
+
+[Bridge]
+떠나고 싶어 새로운 곳으로
+거기서 삶의 의미를 찾아봐
+슬픔은 지나갈 기분이니까
+나의 내일을 바라봐
+
+[Verse 3]
+힘들어도 인내할 수 있을 거야
+큰 호흡을 하고 다시 일어날래
+끝을 보지 말고 길을 바라봐
+난 다시 일어설 거야
+
+[Chorus]
+느낄 거야 언젠가 좋은 날들
+비가 그치고 해가 비출 거야
+눈물 뒤에 웃음이 기다릴 거야
+마음의 문을 열어 봐`
+            },
+            { 
+                title: "Song 2", 
+                description: "직장 생활이 힘들어요 이직하고 싶어요무언가에 집착하거나 반복적인 행동을 해요 정리정돈에 집착해요", 
+                file: "hopeful_horizon.mp3", 
+                lyrics: `[Verse]
+눈이 내린 아침에 늘 생각하곤 해
+직장생활 힘들다 고된 하루라 해
+반복되는 일상 속에 지쳐가지만
+희망이란 작은 빛 멀리서 비추네
+
+[Verse 2]
+무언가에 집착해 마음이 불안해
+정리정돈의 강박 이제 놓을래
+하루하루 살아가며 찾고 싶어 또
+나를 위한 길을 고요한 마음 속
+
+[Chorus]
+이직하고 싶어 난 내 꿈을 찾아서
+좀 더 빛나는 내일 향해서 날아가
+이 순간의 고통이 끝나고 나면
+희망 가득한 내일을 맞이할 거야
+
+[Verse 3]
+작지만 소중한 꿈 하나 품고서
+가슴 깊이 별을 그리며 난 꿈꿔
+힘든 시간들을 견뎌낼 수 있다면
+언젠가 나의 빛 속에서 웃을래
+
+[Bridge]
+발걸음이 무거워도 절대 멈추지 마
+내 안의 작은 빛이 너를 지켜볼 테니
+어둠 속에서도 네 꿈을 잡아
+힘 내어 일어나 이제부터 시작이야
+
+[Chorus]
+이직하고 싶어 난 내 꿈을 찾아서
+좀 더 빛나는 내일 향해서 날아가
+이 순간의 고통이 끝나고 나면
+희망 가득한 내일을 맞이할 거야`
+            },
+            { 
+                title: "Song 3", 
+                description: "직장 생활이 힘들어요 직장 내 인간관계가 힘들어요 식욕이 변했어요  체중이 많이 줄었어요", 
+                file: "resilient_heart.mp3", 
+                lyrics: `[Verse]
+직장 생활이 힘들어도
+버텨낼 수 있어요
+내 마음의 힘으로
+다 견딜 수 있어요
+
+[Verse 2]
+인간관계도 어렵지만
+나는 강해질 거야
+모두 지나갈 거야
+나를 믿어요
+
+[Chorus]
+Resilient heart
+We'll make it through
+매일 힘들어도
+나아질 거야
+
+[Verse 3]
+식욕도 변했지만
+다시 돌아올 거야
+내 몸도 다시 힘을
+찾을 수 있을 거야
+
+[Bridge]
+힘들 때 기억해요
+내가 강해질 시간
+모든 걱정 속에서도
+빛을 찾아가
+
+[Chorus]
+Resilient heart
+We'll make it through
+매일 힘들어도
+나아질 거야`
+            },
+            { 
+                title: "Song 4", 
+                description: "직장 생활이 힘들어요 업무 스트레스가 너무 커요 우울하거나 슬픈 기분이 지속돼요 거의 매일 슬프거나 우울한 기분이 들어요", 
+                file: "강해질_거야.mp3", 
+                lyrics: `[Verse]
+높은 벽 앞에 서 있어
+힘들어도 난 달릴 거야
+눈물은 흘러내리지만
+멈추지 않아 절대로
+
+[Verse 2]
+어두운 길을 걷고 있어
+외로워도 난 나아갈게
+마음은 가라앉지만
+포기하지 않아 절대로
+
+[Chorus]
+강해질 거야 난 이겨낼 거야
+무너져도 다시 일어나
+웃을 거야 난 꿈을 잡을 거야
+어둠 속을 헤쳐 나아가
+
+[Verse 3]
+매일 아침 눈을 떠서
+힘들어도 난 웃을 거야
+슬픔은 사라질 거야
+희망을 찾으러 나가
+
+[Bridge]
+세상의 소음 속에서
+나를 잃고 싶지 않아
+꿈을 향해 달려가
+내 페이스를 잃지 않아
+
+[Chorus]
+강해질 거야 난 이겨낼 거야
+무너져도 다시 일어나
+웃을 거야 난 꿈을 잡을 거야
+어둠 속을 헤쳐 나아가`
+            },
+            { 
+                title: "Song 5", 
+                description: "진로를 찾고 싶어요 어떤 직업을 가져야 할지 모르겠어요 과거의 충격적인 경험이 자주 떠올라요 과거의 사건을 떠올리는 것을 피하려고 해요", 
+                file: "내_안의_길.mp3", 
+                lyrics: `[Verse]
+헤매는 마음 속에 길을 찾아봐
+어디로 가야 할지 알 수 없지만
+과거의 상처가 자꾸 떠오르네
+다시 생각하지 않으려 해
+
+[Verse 2]
+어둠 속에서도 빛을 찾아봐
+희망의 별을 향해 걸어가
+마음의 상처를 꿰매고 싶어
+새로운 날을 맞이하고 싶어
+
+[Chorus]
+내 안의 길 찾고 싶어
+어디든 갈 수 있을 거야
+과거의 아픔을 넘어서
+나의 꿈을 이루고 싶어
+
+[Verse 3]
+바람이 나의 얼굴을 스쳐가네
+새로운 시작을 약속하듯
+가슴 속 깊이 숨겨둔 희망
+다시 꺼내어 빛을 찾아봐
+
+[Bridge]
+내 마음의 소리를 들어봐
+나의 길을 찾아줄 거야
+어둠 속에서도 빛을 찾아
+새로운 날을 기다려
+
+[Chorus]
+내 안의 길 찾고 싶어
+어디든 갈 수 있을 거야
+과거의 아픔을 넘어서
+나의 꿈을 이루고 싶어`
+            },
+            { 
+                title: "Song 6", 
+                description: "연애 문제가 있어요 상대가 날 떠날까봐 불안해요 우울하거나 슬픈 기분이 지속돼요 거의 매일 슬프거나 우울한 기분이 들어요", 
+                file: "staying_strong.mp3", 
+                lyrics: `[Verse]
+너무 힘들어 매일이
+걱정 많아 머릿속은
+불안함에 잠 못 이뤄
+괜찮아질 거야 다시
+
+[Verse 2]
+슬픔 떨치며 일어나
+진심을 잊지 않을래
+네 마음 지켜 힘낼게
+혼자가 아냐 언제나
+
+[Chorus]
+힘을 내어 달려봐
+우리는 함께야
+멈추지 않는 약속
+네 곁에 있을게
+
+[Verse 3]
+눈물 닦고 일어선다
+새로운 날 맞이하며
+걱정들은 뒤로 하고
+미래를 향해 나아가
+
+[Verse 4]
+다시 웃을 용기 내어
+내일이 더 밝을 거야
+너는 혼자가 아니야
+내 손 잡고 함께 가자
+
+[Chorus]
+힘을 내어 달려봐
+우리는 함께야
+멈추지 않는 약속
+네 곁에 있을게`
+            },
+            { 
+                title: "Song 7", 
+                description: "경제적인 문제로 고민이 되요 기타 절제하거나 끊어내기 힘들어요 스마트폰을 지나치게 사용해요", 
+                file: "unchained.mp3", 
+                lyrics: `[Verse]
+Feeling trapped in worries daily
+경제 문제 나를 괴롭히네
+절제 못해 힘든 시간
+인생 어렵고 힘이 드네
+
+[Verse 2]
+스마트폰에 빠져버려
+현실 속의 나를 밀어내
+손에 잡힌 작은 화면
+끝없는 탐색 지친 마음
+
+[Chorus]
+Break the chains that's holding strong
+강해질 거야 나의 맘으로
+Feel the power moving on
+나를 믿어 다시 일어나
+
+[Verse 3]
+돈이 전부 아냐 진짜
+사랑 행복 찾을 수 있어
+작은 희망 빛이 되어
+내일 다시 웃게 될 거야
+
+[Bridge]
+I'll be strong through all this haze
+경제적 고민 떨쳐내
+스마트폰에 갇힌 나나
+다신 놓지 않을 거야自由
+
+[Chorus]
+Break the chains that's holding strong
+강해질 거야 나의 맘으로
+Feel the power moving on
+나를 믿어 다시 일어나`
+            },
+            { 
+                title: "Song 8", 
+                description: "출산 후 이유 없이 눈물이 나요 우울감을 자주 느껴요 우울하거나 슬픈 기분이 지속돼요 흥미나 즐거움을 느끼지 못해요", 
+                file: "feeling_hopeful.mp3", 
+                lyrics: `[Verse]
+눈물이 흐르고 참을 수 없지만
+마음 속에 어둠 저 깊이 갇힌 채로
+슬픔이 가득해 생기를 잃었잖아
+하지만 묻혀진 빛들 찾아봐야 해
+
+[Verse 2]
+가로등 밑에서 한숨 쉬고 있을 때
+차가운 바람이 맘 속에 불어와
+그리움 속엔 희망도 있겠지
+그 믿음 끌어안고 나아가야 해
+
+[Chorus]
+유망한 미래가 있어
+힘든 길도 지나가
+나를 믿고 걸어가는 길
+함께 웃을 날 오겠지
+
+[Verse 3]
+지친 하루 끝에 별이 작게 비춰
+고요한 밤하늘 꿈 속에 자유로워
+별빛 속에 담아 두었던 소원들
+언젠가 다시 찾아 반짝일 거야
+
+[Bridge]
+눈물을 닦고서 일어나 힘껏 숨 쉬어
+여기까지 왔잖아 너와 나 모두
+잡은 손 놓지 말고 함께 걸어가
+앞으로 펼쳐질 그 길을 바라봐
+
+[Chorus]
+유망한 미래가 있어
+힘든 길도 지나가
+나를 믿고 걸어가는 길
+함께 웃을 날 오겠지`
+            },
+            { 
+                title: "Song 9", 
+                description: "직장에서 인정받지 못해요 직장 내 인간관계가 힘들어요 무언가에 집착하거나 반복적인 행동을 해요 정리정돈에 집착해요", 
+                file: "stronger_in_my_steps.mp3", 
+                lyrics: `[Verse]
+인정받지 못해요 반복되는 하루
+무거운 마음 속에 길을 잃은 날들
+외로운 자리 속에 혼자뿐인 시간
+어지러운 생각에 하루를 보내요
+
+[Verse 2]
+무엇을 위해 매일 같은 반복일까
+길을 잃은 채로 헤매는 이 마음
+정리정돈 속에 느껴지는 허무함
+의미 없는 것들은 가득한 세상
+
+[Chorus]
+행복 찾아 헤매어도 보이지 않아
+내 안의 어둠 벗어나고 싶어
+외로움에 갇힌 마음 자유롭게
+행복을 찾고 싶어 끝없이
+
+[Verse 3]
+직장 내 인간관계 힘들어
+비어있는 대화 속 그리움만 남아
+무너져가는 벽을 보며 눈물이
+나도 느끼고 싶어 행복한 기억
+
+[Verse 4]
+사소한 집착에 매달리는 나를
+벗어나고 싶어 불안한 나를
+돌이킬 수 없는 시간들 속에서
+행복을 꿈꾸며 길을 찾아가
+
+[Chorus]
+행복 찾아 헤매어도 보이지 않아
+내 안의 어둠 벗어나고 싶어
+외로움에 갇힌 마음 자유롭게
+행복을 찾고 싶어 끝없이`
+            },
+            { 
+                title: "Song 10", 
+                description: "집에서도 내 자리가 없어요 사람들과 어울리기 힘들어요", 
+                file: "feel_alive.mp3", 
+                lyrics: `[Verse]
+집에서도 내 자리가 없어요
+사람들과 어울리기 힘들어요
+식욕이 변했어요 정말로
+식사에 대해 과도하게 신경 써요
+
+[Verse 2]
+눈을 감고서 크게 숨을 쉬어
+이 순간을 넘겨 견뎌봐요
+고독 속에 웃음을 찾아요
+나만의 빛을 다시 켜요
+
+[Chorus]
+Feel alive feel alive once more
+내 마음의 문을 열고
+희망을 붙잡고서
+웃어봐요 웃어봐 이 순간
+
+[Verse 3]
+세상이 나를 몰라준대도
+나의 가치를 알아주기
+내 꿈을 빛내는 여정
+내가 걸어가기를
+
+[Verse 4]
+어둠을 넘겨 빛을 보아요
+내 마음의 작은 별빛을 따라
+다시 일어서서 걸어가요
+내 이야기를 써내려가요
+
+[Chorus]
+Feel alive feel alive once more
+내 마음의 문을 열고
+희망을 붙잡고서
+웃어봐요 웃어봐 이 순간`
+            },
+           
+            // ... Add more songs here ...
         ];
 
         const songList = document.getElementById('song-list');
@@ -60,7 +462,7 @@
 
             const descriptionDiv = document.createElement('div');
             descriptionDiv.className = 'song-description';
-            descriptionDiv.innerHTML = `<h3>${song.title}</h3><p>${song.description}</p>`;
+            descriptionDiv.innerHTML = `<h3>${escapeLyrics(song.title)}</h3><p>${escapeLyrics(song.description)}</p>`;
 
             const playDiv = document.createElement('div');
             playDiv.className = 'song-play';
@@ -70,7 +472,7 @@
 
             const lyricsDiv = document.createElement('div');
             lyricsDiv.className = 'lyrics';
-            lyricsDiv.innerHTML = `<h4>${song.title} Lyrics</h4><p>${song.lyrics}</p>`;
+            lyricsDiv.innerHTML = `<h4>${escapeLyrics(song.title)} Lyrics</h4><p>${escapeLyrics(song.lyrics)}</p>`;
 
             playDiv.appendChild(playButton);
             songContainer.appendChild(descriptionDiv);
