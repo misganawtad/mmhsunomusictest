@@ -23,6 +23,7 @@
         button {
             padding: 5px 10px;
             cursor: pointer;
+            margin-right: 5px;
         }
         .lyrics {
             display: none;
@@ -46,7 +47,6 @@
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
         }
-
         const songs = [
             { 
                 title: "Song 1", 
@@ -455,6 +455,7 @@ Feel alive feel alive once more
         const songList = document.getElementById('song-list');
         let currentAudio = null;
         let currentLyrics = null;
+        let currentPlayButton = null;
 
         songs.forEach((song, index) => {
             const songContainer = document.createElement('div');
@@ -468,32 +469,67 @@ Feel alive feel alive once more
             playDiv.className = 'song-play';
             const playButton = document.createElement('button');
             playButton.textContent = 'Play';
-            playButton.onclick = () => playSong(song, index);
+            playButton.onclick = () => playSong(song, index, playButton);
+
+            const stopButton = document.createElement('button');
+            stopButton.textContent = 'Stop';
+            stopButton.onclick = stopSong;
+            stopButton.style.display = 'none';
 
             const lyricsDiv = document.createElement('div');
             lyricsDiv.className = 'lyrics';
             lyricsDiv.innerHTML = `<h4>${escapeLyrics(song.title)} Lyrics</h4><p>${escapeLyrics(song.lyrics)}</p>`;
 
             playDiv.appendChild(playButton);
+            playDiv.appendChild(stopButton);
             songContainer.appendChild(descriptionDiv);
             songContainer.appendChild(playDiv);
             songContainer.appendChild(lyricsDiv);
             songList.appendChild(songContainer);
         });
 
-        function playSong(song, index) {
+        function playSong(song, index, playButton) {
             if (currentAudio) {
-                currentAudio.pause();
-            }
-            if (currentLyrics) {
-                currentLyrics.style.display = 'none';
+                stopSong();
             }
             
             currentAudio = new Audio(song.file);
             currentAudio.play();
             
+            if (currentLyrics) {
+                currentLyrics.style.display = 'none';
+            }
             currentLyrics = document.getElementsByClassName('lyrics')[index];
             currentLyrics.style.display = 'block';
+
+            if (currentPlayButton) {
+                currentPlayButton.textContent = 'Play';
+                currentPlayButton.nextElementSibling.style.display = 'none';
+            }
+            currentPlayButton = playButton;
+            playButton.textContent = 'Pause';
+            playButton.nextElementSibling.style.display = 'inline';
+
+            currentAudio.onended = () => {
+                stopSong();
+            };
+        }
+
+        function stopSong() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentAudio = null;
+            }
+            if (currentLyrics) {
+                currentLyrics.style.display = 'none';
+                currentLyrics = null;
+            }
+            if (currentPlayButton) {
+                currentPlayButton.textContent = 'Play';
+                currentPlayButton.nextElementSibling.style.display = 'none';
+                currentPlayButton = null;
+            }
         }
     </script>
 </body>
